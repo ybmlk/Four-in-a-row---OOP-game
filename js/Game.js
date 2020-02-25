@@ -64,14 +64,16 @@ class Game {
     });
 
     if (targetSpace !== null) {
-      game.ready = false;
-      activeToken.drop(targetSpace);
+      this.ready = false;
+      activeToken.drop(targetSpace, () => {
+        this.updateGameState(activeToken, targetSpace);
+      });
     }
   }
 
   /**
    * Checks if there a winner on the board after each token drop.
-   * @param   {Object}    Targeted space for dropped token.
+   * @param   {Object}    target - Targeted space for dropped token.
    * @return  {boolean}   Boolean value indicating whether the game has been won (true) or not (false)
    */
   checkForWin(target) {
@@ -153,7 +155,23 @@ class Game {
     document.getElementById('game-over').textContent = message;
   }
 
-  updateGameState() {
-    
+  /**
+   * Updates game state after token is dropped.
+   * @param   {Object}  token  -  The token that's being dropped.
+   * @param   {Object}  target -  Targeted space for dropped token.
+   */
+  updateGameState(token, target) {
+    target.mark(token);
+
+    if (!this.checkForWin(target)) {
+      this.switchPlayers();
+
+      if (this.activePlayer.checkTokens()) {
+        this.activePlayer.activeToken.drawHTMLToken();
+        this.ready = true;
+      } else {
+        this.gameOver(`${target.owner.name} wins!`);
+      }
+    }
   }
 }
