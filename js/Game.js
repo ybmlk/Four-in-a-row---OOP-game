@@ -169,9 +169,9 @@ class Game {
       if (this.activePlayer.checkTokens()) {
         this.activePlayer.activeToken.drawHTMLToken();
         this.ready = true;
-      } else {
-        this.gameOver(`${target.owner.name} wins!`);
       }
+    } else {
+      this.gameOver(`${target.owner.name} wins!`);
     }
   }
 }
